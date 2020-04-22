@@ -120,6 +120,7 @@ def cmd_inscrever(update, context):
     configuracao['inscritas'].append(chat_id)
     salvar_config(configuracao)
     update.message.reply_text('Inscrição feita. Essa conversa deve receber uma foto da Mel todo dia!! Parabéns!!!')
+    logging.info('Um usuário (%d) se inscreveu ao bot.', chat_id)
 
 
 def cmd_cancelar_inscricao(update, context):
@@ -141,17 +142,19 @@ def cmd_cancelar_inscricao(update, context):
     configuracao['inscritas'].remove(chat_id)
     salvar_config(configuracao)
     update.message.reply_text('Inscrição cancelada. Mas a Mel ainda te ama')
+    logging.info('Um usuário (%d) se desinscreveu do bot.', chat_id)
 
 
 def processar_inscricoes(context):
     configuracao = get_config()
-    print('Enviando mensagem às', len(configuracao['inscritas']), 'conversas inscritas.')
+    logging.info('Enviando mensagem às %d conversas inscritas.', len(configuracao['inscritas']))
     # Pegamos a lista de fotos (para agilizar o envio)
     fotos = get_lista_cached_fotos(configuracao)
     # Para cada chat...
     for inscrito in configuracao['inscritas']:
         # ... enviamos uma foto aleatória
         enviar_foto_com_cache(context.bot, inscrito, fotos)
+    logging.info('Enviado com sucesso!')
 
 
 
