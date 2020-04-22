@@ -12,6 +12,7 @@ Para executar o bot, é necessário possuir um [_token_](https://core.telegram.o
 {
     "caminho_fotos": "melzinha/",
     "token": "INSIRA TOKEN AQUI",
+    "fotos_cadastradas": {},
     "inscritas": []
 }
 
