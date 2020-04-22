@@ -1,1 +1,9 @@
+# Ignoramos a pasta de fotos (pesado para o git)
+fotos/
+
+# Ignoramos virtualenv caso existir
+.venv/
+
+# Ignoramos o arquivo de configuração
 config.json
+
