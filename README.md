@@ -10,7 +10,7 @@ Amamos ela e você amará também! Disponível em [@MelzinhaBot](https://t.me/Me
 Para executar o bot, é necessário possuir um [_token_](https://core.telegram.org/bots#generating-an-authorization-token) de Telegram e escrever no arquivo `config.json`, que é ignorado pelo GitHub para segurança. Seu exemplo pode ser econtrado abaixo:
 ```
 {
-    "caminho_fotos": "melzinha/",
+    "caminho_fotos": "fotos/",
     "token": "INSIRA TOKEN AQUI",
     "fotos_cadastradas": {},
     "inscritas": []

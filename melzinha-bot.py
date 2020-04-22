@@ -32,7 +32,7 @@ def salvar_config(configuracao):
         json.dump(configuracao, arquivo, indent='\t')
 
 
-def get_fotos():
+def get_lista_cached_fotos():
     # Pegamos a configuração
     configuracao = get_config()
     # Pegamos os caminhos das fotos
@@ -44,16 +44,16 @@ def get_fotos():
         # Se não está no dicionário de cache, colocamos sem cache
         if arquivo not in fotos_cache:
             fotos_cache[arquivo] = None
-    # Retornamos a lista de fotos
-    return fotos_cache
+    # Retornamos a lista de pares (caminho, cache id)
+    return list(fotos_cache.items())
 
 
-def get_foto_aleatoria(fotos=get_fotos()):
+def get_foto_aleatoria(fotos=get_lista_cached_fotos()):
     # Pegamos um par aleatório (caminho, cache)
-    return random.choice(fotos.items())
+    return random.choice(fotos)
 
 
-def enviar_foto_com_cache(bot, chat_id, fotos=get_fotos()):
+def enviar_foto_com_cache(bot, chat_id, fotos=get_lista_cached_fotos()):
     # Pegamos uma foto aleatória
     caminho, cache = get_foto_aleatoria(fotos)
     # Determinamos se há cache ou não
@@ -144,7 +144,7 @@ def cmd_cancelar_inscricao(update, context):
 def processar_inscricoes(context):
     print('Enviando mensagem às', len(configuracao['inscritas']), 'conversas inscritas.')
     # Pegamos a lista de fotos (para agilizar o envio)
-    fotos = get_fotos()
+    fotos = get_lista_cached_fotos()
     # Para cada chat...
     for inscrito in configuracao['inscritas']:
         # ... enviamos uma foto aleatória
