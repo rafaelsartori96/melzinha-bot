@@ -139,7 +139,7 @@ def cmd_cancelar_inscricao(update, context):
 
     # Se usuário foi inscrito, removemos e salvamos o JSON
     configuracao['inscritas'].remove(chat_id)
-    salvar_configuracao(configuracao)
+    salvar_config(configuracao)
     update.message.reply_text('Inscrição cancelada. Mas a Mel ainda te ama')
 
 
