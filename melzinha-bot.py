@@ -32,9 +32,7 @@ def salvar_config(configuracao):
         json.dump(configuracao, arquivo, indent='\t')
 
 
-def get_lista_cached_fotos():
-    # Pegamos a configuração
-    configuracao = get_config()
+def get_lista_cached_fotos(configuracao=get_config()):
     # Pegamos os caminhos das fotos
     arquivos_fotos = glob.glob(configuracao['caminho_fotos'] + '*.jpg', recursive=True)
     # Pegamos as fotos em cache
@@ -110,6 +108,8 @@ def cmd_inscrever(update, context):
 
     # Pegamos o chat id do chat
     chat_id = update.effective_chat.id
+    # Pegamos a configuração
+    configuracao = get_config()
 
     # Conferimos se já é inscrito
     if chat_id in configuracao['inscritas']:
@@ -118,7 +118,7 @@ def cmd_inscrever(update, context):
 
     # Se não é, inscrevemos o ID e salvamos o JSON
     configuracao['inscritas'].append(chat_id)
-    salvar_configuracao()
+    salvar_config(configuracao)
     update.message.reply_text('Inscrição feita. Essa conversa deve receber uma foto da Mel todo dia!! Parabéns!!!')
 
 
@@ -129,6 +129,8 @@ def cmd_cancelar_inscricao(update, context):
 
     # Pegamos o chat id do chat
     chat_id = update.effective_chat.id
+    # Pegamos a configuração
+    configuracao = get_config()
 
     # Conferimos se o chat não está inscrito
     if chat_id not in configuracao['inscritas']:
@@ -137,14 +139,15 @@ def cmd_cancelar_inscricao(update, context):
 
     # Se usuário foi inscrito, removemos e salvamos o JSON
     configuracao['inscritas'].remove(chat_id)
-    salvar_configuracao()
+    salvar_configuracao(configuracao)
     update.message.reply_text('Inscrição cancelada. Mas a Mel ainda te ama')
 
 
 def processar_inscricoes(context):
+    configuracao = get_config()
     print('Enviando mensagem às', len(configuracao['inscritas']), 'conversas inscritas.')
     # Pegamos a lista de fotos (para agilizar o envio)
-    fotos = get_lista_cached_fotos()
+    fotos = get_lista_cached_fotos(configuracao)
     # Para cada chat...
     for inscrito in configuracao['inscritas']:
         # ... enviamos uma foto aleatória
