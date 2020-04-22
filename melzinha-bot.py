@@ -12,7 +12,7 @@ from telegram import Bot
 from telegram.ext import Updater
 from telegram.ext import CommandHandler, MessageHandler, Filters
 
-from datetime import time
+from datetime import time, timezone, timedelta
 
 
 CAMINHO_CONFIGURACAO = 'config.json'
@@ -37,11 +37,23 @@ def get_lista_cached_fotos(configuracao=get_config()):
     arquivos_fotos = glob.glob(configuracao['caminho_fotos'] + '*.jpg', recursive=True)
     # Pegamos as fotos em cache
     fotos_cache = configuracao['fotos_cadastradas']
+
+    # Removemos o cache de fotos que não existem mais
+    para_remover = []
+    for (caminho, cache) in fotos_cache.items():
+        # Se não há arquivo de foto para o cache dado, adicionamos para remoção
+        if caminho not in arquivos_fotos:
+            para_remover.append(caminho)
+    # Removemos todos do dicionário
+    for caminho in para_remover:
+        del fotos_cache[caminho]
+
     # Procuramos por fotos recém colocadas no bot
     for arquivo in arquivos_fotos:
         # Se não está no dicionário de cache, colocamos sem cache
         if arquivo not in fotos_cache:
             fotos_cache[arquivo] = None
+
     # Retornamos a lista de pares (caminho, cache id)
     return list(fotos_cache.items())
 
@@ -56,6 +68,7 @@ def enviar_foto_com_cache(bot, chat_id, fotos=get_lista_cached_fotos()):
     caminho, cache = get_foto_aleatoria(fotos)
     # Determinamos se há cache ou não
     if cache is not None:
+        # Enviamos a foto em cache (i am seped)
         bot.send_photo(chat_id, cache)
     else:
         # Abrimos o caminho da foto
@@ -73,6 +86,7 @@ def enviar_foto_com_cache(bot, chat_id, fotos=get_lista_cached_fotos()):
                 if (maior_foto is None or dimensao >= maior_tamanho):
                     maior_foto = foto.file_id
                     maior_tamanho = dimensao
+
             # Se saímos do laço com uma foto existente, colocamos na configuração
             if maior_foto is not None:
                 # Adicionamos a foto ao dicionário e salvamos
@@ -99,6 +113,7 @@ def cmd_mel(update, context):
     if update.effective_chat is not None:
         # Enviamos uma foto aleatória
         enviar_foto_com_cache(context.bot, update.effective_chat.id)
+        logging.info('Um usuário (%d) requisitou uma imagem ao bot.', chat_id)
 
 
 def cmd_inscrever(update, context):
@@ -167,7 +182,7 @@ if __name__ == "__main__":
     updater = Updater(get_config()['token'], use_context=True)
 
     # Definimos horário e mostramos imagem diariamente
-    horario = time(12, 0, 0)
+    horario = time(12, 0, 0, tzinfo=timezone(-timedelta(hours=3)))
     job_daily = updater.job_queue.run_daily(processar_inscricoes, horario)
 
     # Adicionamos handler para comandos
