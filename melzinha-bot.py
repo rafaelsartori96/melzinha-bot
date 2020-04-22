@@ -112,7 +112,8 @@ def cmd_mel(update, context):
     # Conferimos se estamos num chat válido (possui chat id)
     if update.effective_chat is not None:
         # Enviamos uma foto aleatória
-        enviar_foto_com_cache(context.bot, update.effective_chat.id)
+        chat_id = update.effective_chat.id
+        enviar_foto_com_cache(context.bot, chat_id)
         logging.info('Um usuário (%d) requisitou uma imagem ao bot.', chat_id)
 
 
