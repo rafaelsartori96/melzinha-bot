@@ -1,0 +1,17 @@
+[Unit]
+Description=Serviço para responder requisições ao bot de Telegram @MelzinhaBot
+After=multi-user.target
+
+[Service]
+Type=simple
+User=rafael
+Restart=always
+KillSignal=SIGQUIT
+
+Environment="PATH=/home/rafael/melzinha-bot/.venv/bin:$PATH"
+WorkingDirectory=/home/rafael/melzinha-bot
+ExecStart=/home/rafael/melzinha-bot/.venv/bin/python melzinha-bot.py
+
+[Install]
+WantedBy=multi-user.target
+
