@@ -30,7 +30,18 @@ E executar:
 $ python3 melzinha.py
 ```
 
+Ou ainda, podemos utilizar um serviço de `systemd`:
+```
+$ vim melzinha-bot.service
+(alteramos o caminho para o virtual environment)
+$ sudo cp melzinha-bot.service /etc/systemd/system/
+$ sudo systemctl daemon-reload
+$ sudo systemctl enable melzinha-bot.service
+$ sudo systemctl start melzinha-bot.service
+```
+
 
 ## Resumo de funcionamento
 
 O bot utiliza o arquivo de configuração em formato JSON como banco de dados de conversas inscritas. Além disso, reagenda o envio de imagens após execução com período de 1 dia, ou seja, irá enviar sempre uma foto às inscritas no mesmo horário de início de execução do bot.
+
